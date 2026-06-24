@@ -1,0 +1,16 @@
+{
+  "name": "pallas-landing",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "start": "node ./dist/server/entry.mjs"
+  },
+  "dependencies": {
+    "@astrojs/node": "^8.3.3",
+    "astro": "^4.16.18",
+    "resend": "^4.1.2"
+  }
+}

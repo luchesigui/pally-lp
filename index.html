@@ -1,0 +1,4516 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Pallas & Pally — A companheira de viagem proativa que transforma sua experiência de viagem com mapas inteligentes e sugestões em tempo real."
+    />
+    <title>Pallas & Pally — Sua Companheira de Viagem Proativa</title>
+
+    <!-- Fontes Premium do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ==========================================================================
+       Variáveis de Design & Reset
+       ========================================================================== */
+      :root {
+        --bg-primary: #fafafa;
+        --bg-secondary: #ffffff;
+        --text-primary: #1a1a2e;
+        --text-secondary: #4b5563;
+        --text-muted: #8e9aa8;
+
+        --accent-primary: #00b4d8;
+        --accent-primary-hover: #0096c7;
+        --accent-primary-rgb: 0, 180, 216;
+        --accent-secondary: #7c3aed;
+        --accent-secondary-hover: #6d28d9;
+        --accent-secondary-rgb: 124, 58, 237;
+
+        --card-bg: rgba(255, 255, 255, 0.7);
+        --card-border: rgba(0, 180, 216, 0.08);
+        --card-border-focus: rgba(124, 58, 237, 0.2);
+        --card-shadow:
+          0 12px 40px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.01);
+        --card-shadow-hover:
+          0 20px 40px rgba(0, 180, 216, 0.08),
+          0 1px 10px rgba(0, 180, 216, 0.02);
+
+        --font-sans:
+          "Outfit", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, sans-serif;
+        --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+        --header-height: 80px;
+
+        /* Radius system */
+        --radius-xl: 24px;
+        --radius-lg: 16px;
+        --radius-md: 12px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: var(--font-sans);
+        font-size: 16px;
+        overflow-x: hidden;
+      }
+
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        position: relative;
+      }
+
+      /* Scrollbar Personalizado */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg-primary);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(0, 180, 216, 0.2);
+        border-radius: 5px;
+        border: 2px solid var(--bg-primary);
+        transition: background 0.3s;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-primary);
+      }
+
+      /* ==========================================================================
+       Acessibilidade & Motion Reduzido
+       ========================================================================== */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-delay: 0s !important;
+          animation-duration: 0s !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0s !important;
+          scroll-behavior: auto !important;
+          transform: none !important;
+        }
+        .bg-blob,
+        .pulse-pin,
+        .orbit-animation {
+          display: none !important;
+        }
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* ==========================================================================
+       Elementos Visuais de Background (Aparência Leve, Arejada, Flutuante)
+       ========================================================================== */
+      .bg-grid {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+          linear-gradient(rgba(0, 180, 216, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 180, 216, 0.02) 1px, transparent 1px);
+        background-size: 80px 80px;
+        background-position: center center;
+        z-index: -2;
+        pointer-events: none;
+      }
+
+      .bg-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(130px);
+        opacity: 0.25;
+        z-index: -1;
+        pointer-events: none;
+        will-change: transform;
+      }
+
+      .blob-1 {
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+          circle,
+          rgba(0, 180, 216, 0.3) 0%,
+          transparent 70%
+        );
+        top: -200px;
+        left: -100px;
+        animation: float-blob-1 25s infinite ease-in-out;
+      }
+
+      .blob-2 {
+        width: 700px;
+        height: 700px;
+        background: radial-gradient(
+          circle,
+          rgba(124, 58, 237, 0.2) 0%,
+          transparent 70%
+        );
+        top: 30%;
+        right: -200px;
+        animation: float-blob-2 30s infinite ease-in-out;
+      }
+
+      .blob-3 {
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(
+          circle,
+          rgba(0, 180, 216, 0.15) 0%,
+          transparent 70%
+        );
+        bottom: 10%;
+        left: -150px;
+        animation: float-blob-3 20s infinite ease-in-out;
+      }
+
+      @keyframes float-blob-1 {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(50px, 80px) scale(1.05);
+        }
+        66% {
+          transform: translate(-30px, 40px) scale(0.95);
+        }
+      }
+      @keyframes float-blob-2 {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1.02);
+        }
+        50% {
+          transform: translate(-70px, -50px) scale(0.98);
+        }
+      }
+      @keyframes float-blob-3 {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(0.95);
+        }
+        50% {
+          transform: translate(60px, -30px) scale(1.08);
+        }
+      }
+
+      /* ==========================================================================
+       Componentes CSS Reutilizáveis (Aesthetics)
+       ========================================================================== */
+      .glass-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--card-shadow);
+        transition: var(--transition-smooth);
+      }
+
+      .glass-card:hover {
+        border-color: rgba(0, 180, 216, 0.2);
+        box-shadow: var(--card-shadow-hover);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 28px;
+        font-family: var(--font-sans);
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: 30px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: var(--transition-smooth);
+        border: 1px solid transparent;
+        outline: none;
+      }
+
+      .btn-primary {
+        background: var(--text-primary);
+        color: var(--bg-secondary);
+        box-shadow: 0 4px 15px rgba(26, 26, 46, 0.15);
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.25);
+      }
+
+      .btn-secondary {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid rgba(0, 180, 216, 0.15);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--accent-primary);
+        background: rgba(0, 180, 216, 0.05);
+        transform: translateY(-2px);
+      }
+
+      .btn-icon {
+        gap: 8px;
+      }
+
+      .text-gradient {
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+      }
+
+      /* Headlines Modernas */
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-sans);
+        color: var(--text-primary);
+      }
+
+      h1 {
+        font-weight: 300;
+        line-height: 1.15;
+      }
+
+      h2 {
+        font-weight: 300;
+        font-size: 2.5rem;
+        line-height: 1.25;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      /* Container global */
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* ==========================================================================
+       1. Nav Header
+       ========================================================================== */
+      .nav-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--header-height);
+        z-index: 100;
+        background: rgba(250, 250, 250, 0.7);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-bottom: 1px solid rgba(0, 180, 216, 0.04);
+        transition: var(--transition-smooth);
+        display: flex;
+        align-items: center;
+      }
+
+      /* Animação via Scroll-Driven (definida no CSS e via JS fallback) */
+      @keyframes shrink-header {
+        to {
+          height: 64px;
+          background: rgba(255, 255, 255, 0.9);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+          border-bottom-color: rgba(0, 180, 216, 0.1);
+        }
+      }
+
+      @supports (
+        (animation-timeline: scroll()) and (animation-range: 0% 100%)
+      ) {
+        .nav-header {
+          animation: shrink-header auto linear both;
+          animation-timeline: scroll(block root);
+          animation-range: 0px 100px;
+        }
+      }
+
+      .nav-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        padding: 2rem;
+        margin: -2rem 0 -2rem -2rem;
+      }
+
+      .nav-logo svg {
+        transform-origin: center;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: rotate(var(--logo-rotation, 0deg)) scale(1);
+      }
+
+      .nav-logo:hover svg {
+        transform: rotate(var(--logo-rotation, 0deg)) scale(1.15);
+      }
+
+      .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+      }
+
+      .nav-link {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: var(--transition-smooth);
+        position: relative;
+      }
+
+      .nav-link:hover {
+        color: var(--accent-secondary);
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent-primary);
+        transition: var(--transition-smooth);
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .burger-menu {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        z-index: 101;
+      }
+
+      .burger-menu span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--text-primary);
+        margin: 5px 0;
+        transition: var(--transition-smooth);
+      }
+
+      /* ==========================================================================
+       2. Hero Section
+       ========================================================================== */
+      .hero-section {
+        padding-top: calc(var(--header-height) + 60px);
+        padding-bottom: 100px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 50px;
+        align-items: center;
+      }
+
+      .hero-content {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(0, 180, 216, 0.08);
+        border: 1px solid rgba(0, 180, 216, 0.12);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--accent-primary-hover);
+        width: fit-content;
+      }
+
+      .hero-badge .badge-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--accent-primary);
+        border-radius: 50%;
+        animation: pulse-dot 2s infinite;
+      }
+
+      @keyframes pulse-dot {
+        0% {
+          transform: scale(0.9);
+          opacity: 0.6;
+        }
+        50% {
+          transform: scale(1.3);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.9);
+          opacity: 0.6;
+        }
+      }
+
+      .hero-title {
+        font-size: 3.5rem;
+        color: var(--text-primary);
+      }
+
+      .hero-title strong {
+        font-weight: 700;
+      }
+
+      .hero-subtitle {
+        font-size: 1.15rem;
+        color: var(--text-secondary);
+        max-width: 540px;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 16px;
+      }
+
+      .hero-visual {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+      }
+
+      /* iPhone Device Mockup & Rotation Handling */
+      .phone-mockup {
+        width: 100%;
+        max-width: 320px;
+        aspect-ratio: 9 / 19.5;
+        background: #000;
+        border: 11px solid #111;
+        border-radius: 44px;
+        box-shadow:
+          0 25px 60px rgba(0, 0, 0, 0.15),
+          0 0 0 1px rgba(0, 0, 0, 0.05),
+          inset 0 0 3px rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+        transition: var(--transition-spring);
+        will-change: transform;
+      }
+
+      .phone-mockup:hover {
+        transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
+      }
+
+      /* Dynamic Island */
+      .phone-island {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 95px;
+        height: 25px;
+        background: #000;
+        border-radius: 15px;
+        z-index: 5;
+      }
+
+      /* Screen Canvas - overflow protection for 3D transforms */
+      .phone-screen {
+        width: 100%;
+        height: 100%;
+        background: #faf6ee;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        border-radius: 33px;
+        overflow: hidden;
+        transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0);
+        will-change: transform;
+      }
+
+      /* App Header */
+      .app-header {
+        padding: 36px 16px 12px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 8;
+        position: relative;
+      }
+
+      .app-logo {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .app-logo-icon {
+        width: 24px;
+        height: 24px;
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .app-logo-text {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .app-status {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--accent-primary-hover);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(0, 180, 216, 0.08);
+        padding: 3px 8px;
+        border-radius: 12px;
+      }
+
+      /* Interactive Map Canvas */
+      .app-map-canvas {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background: #faf6ee; /* Matches map background color */
+      }
+
+      .map-wrapper {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        transform-origin: center center;
+      }
+
+      /* Standardized Cover SVG Styling to remove gaps */
+      .app-map-canvas svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .map-pin {
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        position: absolute;
+        transform: translate(-50%, -100%);
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 3;
+      }
+
+      .map-pin svg {
+        width: 32px;
+        height: 32px;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+      }
+
+      .map-pin.active svg path {
+        fill: var(--accent-secondary);
+      }
+
+      .map-pin.active {
+        transform: translate(-50%, -100%) scale(1.25);
+      }
+
+      /* Pins coordinates inside App Map Container */
+      #pin-1 {
+        top: 38%;
+        left: 45%;
+      }
+      #pin-2 {
+        top: 62%;
+        left: 28%;
+      }
+      #pin-3 {
+        top: 22%;
+        left: 75%;
+      }
+
+      /* Current user position */
+      .user-position {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 14px;
+        height: 14px;
+        background: #007aff;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
+        z-index: 2;
+      }
+
+      .user-position::after {
+        content: "";
+        position: absolute;
+        top: -6px;
+        left: -6px;
+        right: -6px;
+        bottom: -6px;
+        border: 2px solid rgba(0, 122, 255, 0.4);
+        border-radius: 50%;
+        animation: pulse-ring 2s infinite ease-out;
+      }
+
+      @keyframes pulse-ring {
+        0% {
+          transform: scale(0.7);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.6);
+          opacity: 0;
+        }
+      }
+
+      /* Native Notification Toast (Replaces the chat bubble) */
+      .app-notification {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 14px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transform: translateY(-20px);
+        opacity: 0;
+        animation: notification-reveal 0.6s 0.8s cubic-bezier(0.16, 1, 0.3, 1)
+          forwards;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      }
+
+      .app-notification.hidden {
+        opacity: 0 !important;
+        transform: translateY(-30px) !important;
+      }
+
+      @keyframes notification-reveal {
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .notification-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        flex-shrink: 0;
+      }
+
+      .notification-icon svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .notification-content {
+        flex: 1;
+        text-align: left;
+      }
+
+      .notification-title {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1.1;
+        margin-bottom: 1px;
+      }
+
+      .notification-text {
+        font-size: 0.72rem;
+        color: var(--text-secondary);
+        line-height: 1.3;
+        font-weight: 500;
+      }
+
+      /* Notificação Nativa no Hero */
+      .hero-notification {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.75); /* semi-transparente */
+        backdrop-filter: blur(20px); /* blur */
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 14px;
+        padding: 10px 14px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+
+        /* Initial state for slide-down animation */
+        opacity: 0;
+        transform: translateY(-50px);
+        transition:
+          transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.4s ease;
+      }
+
+      .hero-notification.show {
+        opacity: 1;
+        transform: translateY(0); /* slide-down */
+      }
+
+      .hero-notification.show.fade-out {
+        opacity: 0;
+        transform: translateY(0);
+        transition: opacity 0.6s ease;
+      }
+
+      .hero-notification .notification-check {
+        font-size: 1rem;
+        flex-shrink: 0;
+      }
+
+      .hero-notification .notification-text {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        line-height: 1.2;
+      }
+
+      /* 3 Contextual Cards container at bottom of Phone */
+      .app-cards-container,
+      .app-cards-stack {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        background: transparent; /* No gray area below map */
+        z-index: 4;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .app-card-title-section {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        margin-left: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2px;
+      }
+
+      .app-card-title-section .badge-pally {
+        font-size: 0.62rem;
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+        color: #fff;
+        padding: 1px 5px;
+        border-radius: 8px;
+      }
+
+      /* Slim, compact custom cards */
+      .app-interactive-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 12px;
+        padding: 6px 10px; /* Padding compacto */
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        height: 52px;
+        box-sizing: border-box;
+      }
+
+      .app-interactive-card.selected {
+        background: #ffffff;
+        border-color: var(--accent-primary);
+        box-shadow: 0 4px 12px rgba(0, 180, 216, 0.12);
+      }
+
+      .card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+        text-align: left;
+      }
+
+      .card-name {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        line-height: 1.15;
+        font-family: var(--font-sans);
+      }
+
+      .card-desc {
+        font-size: 0.58rem;
+        color: var(--text-secondary);
+        line-height: 1.2;
+        font-family: var(--font-sans);
+      }
+
+      .card-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 0.6rem;
+        font-weight: 600;
+        color: var(--accent-primary-hover);
+        background: rgba(0, 180, 216, 0.08);
+        padding: 2px 6px;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+
+      .pedestrian-icon {
+        width: 10px;
+        height: 10px;
+        flex-shrink: 0;
+        color: var(--accent-primary-hover);
+      }
+
+      /* ==========================================================================
+       3. O Que É Section
+       ========================================================================== */
+      .what-is-section {
+        padding: 100px 0;
+        background: var(--bg-secondary);
+        border-top: 1px solid rgba(0, 180, 216, 0.05);
+        border-bottom: 1px solid rgba(0, 180, 216, 0.05);
+        position: relative;
+      }
+
+      .section-header {
+        max-width: 700px;
+        margin: 0 auto 60px;
+        text-align: center;
+      }
+
+      .section-tagline {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--accent-secondary);
+        margin-bottom: 12px;
+        display: block;
+      }
+
+      .section-description {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .concept-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-top: 50px;
+      }
+
+      .concept-card {
+        padding: 40px;
+        border-radius: var(--radius-xl);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .concept-card-title {
+        font-size: 1.45rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .concept-card-title svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .concept-body {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .concept-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .concept-item svg {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .chatbot-card {
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+      }
+
+      .chatbot-card .concept-card-title {
+        color: var(--text-secondary);
+      }
+
+      .chatbot-card svg {
+        color: #9ca3af;
+      }
+
+      .pally-card {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 180, 216, 0.03) 0%,
+          rgba(124, 58, 237, 0.03) 100%
+        );
+        border: 1px solid rgba(0, 180, 216, 0.15);
+        box-shadow: 0 10px 40px rgba(0, 180, 216, 0.05);
+      }
+
+      .pally-card::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(
+          circle,
+          rgba(0, 180, 216, 0.1) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .pally-card .concept-card-title {
+        color: var(--text-primary);
+      }
+
+      .pally-card svg {
+        color: var(--accent-primary);
+      }
+
+      /* ==========================================================================
+       4. Features Section
+       ========================================================================== */
+      .features-section {
+        padding: 100px 0;
+        position: relative;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        margin-top: 50px;
+      }
+
+      .feature-card {
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .feature-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: rgba(0, 180, 216, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-primary-hover);
+        transition: var(--transition-smooth);
+      }
+
+      .feature-card:hover .feature-icon-wrapper {
+        background: var(--accent-primary);
+        color: #fff;
+        transform: scale(1.1);
+      }
+
+      .feature-card.purple-theme .feature-icon-wrapper {
+        background: rgba(124, 58, 237, 0.08);
+        color: var(--accent-secondary);
+      }
+
+      .feature-card.purple-theme:hover .feature-icon-wrapper {
+        background: var(--accent-secondary);
+        color: #fff;
+      }
+
+      .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .feature-desc {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+
+      /* ==========================================================================
+       5. Como Funciona Section
+       ========================================================================== */
+      .how-it-works-section {
+        padding: 100px 0;
+        background: var(--bg-secondary);
+        border-top: 1px solid rgba(0, 180, 216, 0.05);
+        position: relative;
+      }
+
+      .timeline-container {
+        position: relative;
+        max-width: 900px;
+        margin: 60px auto 0;
+        display: flex;
+        flex-direction: column;
+        gap: 80px;
+      }
+
+      /* A linha guia central */
+      .timeline-line {
+        position: absolute;
+        left: 50px;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        z-index: 1;
+      }
+
+      .timeline-progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 0%;
+        background: linear-gradient(
+          to bottom,
+          var(--accent-primary),
+          var(--accent-secondary)
+        );
+        border-radius: 2px;
+        transition: height 0.1s linear;
+      }
+
+      .timeline-item {
+        display: flex;
+        gap: 40px;
+        position: relative;
+        z-index: 2;
+        opacity: 0.3;
+        transform: translateY(20px);
+        transition: var(--transition-smooth);
+      }
+
+      .timeline-item.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .timeline-node {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #fff;
+        border: 4px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        transition: var(--transition-smooth);
+        flex-shrink: 0;
+        margin-left: 32px;
+      }
+
+      .timeline-item.active .timeline-node {
+        border-color: var(--accent-primary);
+        background: var(--accent-primary);
+        color: #fff;
+        box-shadow: 0 0 15px rgba(0, 180, 216, 0.4);
+      }
+
+      .timeline-item:nth-child(even).active .timeline-node {
+        border-color: var(--accent-secondary);
+        background: var(--accent-secondary);
+        box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+      }
+
+      .timeline-content {
+        flex: 1;
+        padding: 30px;
+        border-radius: var(--radius-xl);
+      }
+
+      .timeline-step-title {
+        font-size: 1.35rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .timeline-step-desc {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+      }
+
+      /* ==========================================================================
+       6. App Preview (Showcase Dia/Tarde/Noite)
+       ========================================================================== */
+      .preview-section {
+        padding: 100px 0;
+        position: relative;
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.1fr;
+        gap: 60px;
+        align-items: center;
+      }
+
+      .preview-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .preview-content h2 {
+        text-align: left;
+      }
+
+      .time-toggles {
+        display: inline-flex;
+        background: rgba(0, 180, 216, 0.05);
+        border: 1px solid rgba(0, 180, 216, 0.08);
+        padding: 6px;
+        border-radius: 30px;
+        gap: 4px;
+        width: fit-content;
+        margin-bottom: 15px;
+      }
+
+      .time-btn {
+        background: none;
+        border: none;
+        padding: 10px 24px;
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .time-btn.active {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Phone Mockup Preview */
+      .phone-mockup-preview {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+        aspect-ratio: 9 / 19.5;
+        background: #000;
+        border: 11px solid #111;
+        border-radius: 44px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        transform: perspective(1000px);
+        transition: var(--transition-smooth);
+      }
+
+      /* Transição do mapa baseado no período */
+      .map-preview-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1;
+      }
+
+      .map-preview-layer.active {
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 2;
+      }
+
+      /* Wrapper for cover maps preview */
+      .map-preview-layer svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .app-cards-stack {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 12px;
+        background: linear-gradient(
+          to top,
+          rgba(243, 244, 246, 0.95) 80%,
+          rgba(243, 244, 246, 0)
+        );
+        z-index: 4;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        max-height: 230px;
+        overflow-y: hidden;
+        transition:
+          transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.6s ease;
+      }
+
+      .app-cards-stack.collapsed {
+        transform: translateY(120%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* ==========================================================================
+       7. CTA Final & Formulário
+       ========================================================================== */
+      .cta-final-section {
+        padding: 100px 0;
+        position: relative;
+      }
+
+      .cta-box {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+      }
+
+      .cta-heading {
+        font-size: 2.6rem;
+        font-weight: 300;
+        color: var(--text-primary);
+      }
+
+      .cta-desc {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+      }
+
+      .cta-stores {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+
+      .store-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #111111;
+        color: #fff;
+        padding: 8px 18px;
+        border-radius: 12px;
+        text-decoration: none;
+        text-align: left;
+        font-family: var(--font-sans);
+        transition: var(--transition-smooth);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .store-badge:hover {
+        background: #222;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .store-badge svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+      }
+
+      .store-text {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .store-small {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        opacity: 0.7;
+      }
+
+      .store-large {
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      /* Lead Form */
+      .lead-form-wrapper {
+        width: 100%;
+        max-width: 500px;
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .lead-form-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .lead-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .form-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+      }
+
+      .form-input {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 180, 216, 0.15);
+        background: rgba(255, 255, 255, 0.8);
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        outline: none;
+        transition: var(--transition-smooth);
+      }
+
+      .form-input:focus {
+        border-color: var(--accent-secondary);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+      }
+
+      .form-input:user-invalid {
+        border-color: #ef4444;
+        background: rgba(239, 68, 68, 0.02);
+      }
+
+      .form-submit-btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        font-size: 0.95rem;
+        margin-top: 10px;
+      }
+
+      /* Modal de Sucesso */
+      .success-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(26, 26, 46, 0.4);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: var(--transition-smooth);
+      }
+
+      .success-modal.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .success-modal-card {
+        width: 100%;
+        max-width: 420px;
+        padding: 40px 30px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        transform: translateY(20px);
+        transition: var(--transition-spring);
+      }
+
+      .success-modal.active .success-modal-card {
+        transform: translateY(0);
+      }
+
+      .success-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .success-icon-wrapper svg {
+        width: 32px;
+        height: 32px;
+      }
+
+      .success-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+      }
+
+      .success-desc {
+        font-size: 0.92rem;
+        color: var(--text-secondary);
+      }
+
+      /* ==========================================================================
+       9. Footer
+       ========================================================================== */
+      .site-footer {
+        background: var(--bg-secondary);
+        border-top: 1px solid rgba(0, 180, 216, 0.05);
+        padding: 60px 0 30px;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr 0.8fr 1.2fr;
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+
+      .footer-col {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .footer-col h5 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-primary);
+      }
+
+      .footer-links {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .footer-link-item {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-size: 0.88rem;
+        transition: var(--transition-smooth);
+      }
+
+      .footer-link-item:hover {
+        color: var(--accent-primary-hover);
+      }
+
+      .footer-about {
+        font-size: 0.88rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+
+      .footer-socials {
+        display: flex;
+        gap: 12px;
+      }
+
+      .social-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(0, 180, 216, 0.05);
+        border: 1px solid rgba(0, 180, 216, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: var(--transition-smooth);
+      }
+
+      .social-btn:hover {
+        background: var(--accent-primary);
+        color: #fff;
+        transform: translateY(-2px);
+      }
+
+      .footer-bottom {
+        border-top: 1px solid #f3f4f6;
+        padding-top: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+
+      .footer-bottom-links {
+        display: flex;
+        gap: 20px;
+      }
+
+      /* ==========================================================================
+       10. Menu responsivo e Layout Mobile (mobile-first adjustments)
+       ========================================================================== */
+      @media (max-width: 1024px) {
+        .hero-grid,
+        .concept-grid,
+        .features-grid,
+        .preview-grid {
+          grid-template-columns: 1fr;
+          gap: 50px;
+        }
+
+        .hero-content {
+          align-items: center;
+          text-align: center;
+        }
+
+        .hero-subtitle {
+          margin: 0 auto;
+        }
+
+        .hero-actions {
+          justify-content: center;
+        }
+
+        .phone-mockup {
+          transform: none !important;
+        }
+
+        .timeline-line {
+          left: 20px;
+        }
+
+        .timeline-node {
+          margin-left: 2px;
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        :root {
+          --header-height: 70px;
+        }
+
+        .hero-title {
+          font-size: 2.5rem;
+        }
+
+        h2 {
+          font-size: 2rem;
+        }
+
+        .nav-menu {
+          position: fixed;
+          top: var(--header-height);
+          left: 0;
+          right: 0;
+          background: #fafafa;
+          border-bottom: 1px solid rgba(0, 180, 216, 0.1);
+          padding: 30px 24px;
+          flex-direction: column;
+          gap: 20px;
+          transform: translateY(-120%);
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+          z-index: 99;
+        }
+
+        .nav-menu.active {
+          transform: translateY(0);
+        }
+
+        .burger-menu {
+          display: block;
+        }
+
+        .nav-actions {
+          display: none;
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-bottom {
+          flex-direction: column;
+          gap: 16px;
+          text-align: center;
+        }
+      }
+
+      /* ==========================================================================
+       HERO INTERACTIVE FLOW STYLES (Ajuste 3)
+       ========================================================================== */
+      /* Notification Toast inside Hero Mockup */
+      .hero-notification {
+        position: absolute;
+        top: 76px;
+        left: 12px;
+        right: 12px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 12px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transform: translateY(-120px);
+        opacity: 0;
+        transition:
+          transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.4s ease;
+      }
+      .hero-notification.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .hero-notification-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #10b981;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 0.7rem;
+        flex-shrink: 0;
+      }
+      .hero-notification-icon svg {
+        width: 12px;
+        height: 12px;
+      }
+      .hero-notification-content {
+        flex: 1;
+        text-align: left;
+      }
+      .hero-notification-title {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1.1;
+        margin-bottom: 1px;
+      }
+      .hero-notification-text {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        line-height: 1.3;
+        font-weight: 600;
+      }
+
+      /* Detail Card inside Hero Mockup */
+      .hero-detail-card {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 20px 20px 0 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.08);
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        transform: translateY(110%);
+        opacity: 0;
+        transition:
+          transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.6s ease;
+      }
+      .hero-detail-card.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .detail-title-group {
+        text-align: left;
+        flex: 1;
+      }
+      .detail-name {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+      }
+      .detail-desc {
+        font-size: 0.65rem;
+        color: var(--text-secondary);
+        line-height: 1.3;
+      }
+      .detail-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--accent-primary-hover);
+        background: rgba(0, 180, 216, 0.08);
+        padding: 3px 6px;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+      .detail-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .btn-detail {
+        flex: 1;
+        padding: 8px 10px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: all 0.2s ease;
+      }
+      .btn-ticket {
+        background: rgba(0, 180, 216, 0.08);
+        color: var(--accent-primary-hover);
+        border: 1px solid rgba(0, 180, 216, 0.15);
+      }
+      .btn-ticket:hover {
+        background: rgba(0, 180, 216, 0.12);
+      }
+      .btn-route {
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(0, 180, 216, 0.2);
+      }
+      .btn-route:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(0, 180, 216, 0.25);
+      }
+      .btn-route:active {
+        transform: translateY(0);
+      }
+
+      /* Cards container slide-down class */
+      .app-cards-container {
+        transition:
+          transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.6s ease;
+      }
+      .app-cards-container.hidden {
+        transform: translateY(110%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* Simulated cursor finger */
+      .simulated-cursor {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background: rgba(0, 180, 216, 0.4);
+        border: 2px solid rgba(0, 180, 216, 0.8);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 99;
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+        transition:
+          top 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+          left 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+          transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+          opacity 0.4s ease;
+      }
+      .simulated-cursor.visible {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+      .simulated-cursor.clicking {
+        transform: translate(-50%, -50%) scale(0.7);
+        background: rgba(0, 180, 216, 0.7);
+      }
+
+      /* Route Line Animation */
+      .route-line {
+        stroke-dasharray: 180;
+        stroke-dashoffset: 180;
+        opacity: 0;
+        transition:
+          stroke-dashoffset 1.5s ease-in-out,
+          opacity 0.5s ease-in-out;
+        vector-effect: non-scaling-stroke;
+        stroke-width: 4px;
+      }
+      .route-line.active {
+        opacity: 1;
+        stroke-dashoffset: 0;
+      }
+
+      /* Cards Container transition and collapsed state */
+      .app-cards-container {
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .app-cards-container.collapsed {
+        transform: translateY(120%);
+      }
+
+      /* Detail Card (Glassmorphism, slides up from bottom) */
+      .app-detail-card {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px 20px 0 0;
+        padding: 18px 16px 24px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+        z-index: 7;
+        transform: translateY(100%);
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .app-detail-card.active {
+        transform: translateY(0);
+      }
+      .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.65rem;
+        font-weight: 700;
+      }
+      .detail-category {
+        text-transform: uppercase;
+        color: var(--accent-primary-hover);
+        background: rgba(0, 180, 216, 0.08);
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+      .detail-rating {
+        color: #ffb000;
+      }
+      .detail-name {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        text-align: left;
+        font-family: var(--font-sans);
+      }
+      .detail-desc {
+        font-size: 0.62rem;
+        color: var(--text-secondary);
+        line-height: 1.3;
+        text-align: left;
+        font-family: var(--font-sans);
+      }
+      .detail-meta {
+        display: flex;
+        gap: 20px;
+        margin-top: 4px;
+      }
+      .detail-meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        text-align: left;
+      }
+      .detail-meta-label {
+        color: var(--text-secondary);
+        font-size: 0.52rem;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .detail-meta-val {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 0.65rem;
+      }
+      .detail-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .btn-detail {
+        flex: 1;
+        border: none;
+        font-family: var(--font-sans);
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          opacity 0.2s ease;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+      }
+      .btn-ticket {
+        background: rgba(16, 185, 129, 0.08);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+      .btn-route {
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary) 0%,
+          var(--accent-secondary) 100%
+        );
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 180, 216, 0.2);
+      }
+      .btn-route.clicked {
+        transform: scale(0.95);
+        opacity: 0.9;
+      }
+
+      /* Route notification (slides down from behind app-header) */
+      .app-route-notification {
+        position: absolute;
+        top: 84px;
+        left: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 12px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transform: translateY(-130px);
+        opacity: 0;
+        transition:
+          transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+          opacity 0.5s ease;
+      }
+      .app-route-notification.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .route-notif-icon {
+        font-size: 1.1rem;
+        background: rgba(0, 122, 255, 0.1);
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .route-notif-body {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+      }
+      .route-notif-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .route-notif-desc {
+        font-size: 0.58rem;
+        color: var(--text-secondary);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Elementos Ambientais de Background -->
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-blob blob-1" aria-hidden="true"></div>
+    <div class="bg-blob blob-2" aria-hidden="true"></div>
+    <div class="bg-blob blob-3" aria-hidden="true"></div>
+
+    <!-- ==========================================================================
+       1. Nav Header (Glassmorphic)
+       ========================================================================== -->
+    <header class="nav-header">
+      <div class="container nav-container">
+        <a href="#" class="nav-logo" aria-label="Voltar ao topo">
+          <!-- Novo SVG Logo do Pallas (#00B4D8) -->
+          <svg
+            viewBox="0 0 444 465"
+            width="32"
+            height="32"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient
+                id="logo-grad-site-header"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stop-color="#00B4D8" />
+                <stop offset="100%" stop-color="#7209B7" />
+              </linearGradient>
+            </defs>
+            <g
+              fill="url(#logo-grad-site-header)"
+              transform="translate(0,465) scale(0.1,-0.1)"
+            >
+              <path
+                d="M2050 3934 c-264 -33 -549 -138 -762 -281 -619 -415 -912 -1172 -732 -1888 106 -420 379 -800 746 -1039 383 -249 861 -339 1308 -245 138 29 239 64 379 130 202 96 315 174 470 323 214 208 350 417 440 679 130 376 133 756 10 1135 l-21 62 -56 -51 c-69 -61 -195 -125 -277 -140 -90 -17 -86 -15 -74 -46 24 -64 50 -216 55 -333 17 -335 -112 -674 -353 -930 -185 -197 -445 -339 -708 -385 -116 -20 -325 -21 -437 -1 -317 57 -610 234 -800 483 -181 236 -271 497 -271 788 0 345 133 665 378 910 363 364 911 474 1396 280 13 -5 21 11 43 78 31 95 87 187 158 261 27 28 48 51 48 53 0 7 -117 54 -204 82 -183 59 -273 73 -496 76 -113 2 -221 1 -240 -1z"
+              />
+              <path
+                d="M3314 3716 c-86 -20 -159 -59 -224 -122 -103 -98 -146 -209 -138 -361 5 -82 10 -103 42 -169 175 -353 665 -351 834 3 36 77 37 80 37 198 0 118 -1 121 -37 195 -37 76 -111 161 -173 199 -96 58 -234 81 -341 57z"
+              />
+            </g>
+          </svg>
+          <span>Pallas</span>
+        </a>
+
+        <nav class="nav-menu" id="nav-menu" aria-label="Menu principal">
+          <a href="#features" class="nav-link">Recursos</a>
+          <a href="#como-funciona" class="nav-link">Como funciona</a>
+          <a href="#preview" class="nav-link">Demonstração</a>
+        </nav>
+
+        <div class="nav-actions">
+          <a href="#waitlist" class="btn btn-secondary">Acessar App</a>
+        </div>
+
+        <button
+          class="burger-menu"
+          id="burger-toggle"
+          aria-label="Abrir menu de navegação"
+          aria-expanded="false"
+          aria-controls="nav-menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==========================================================================
+       2. Hero Section (Visual do App com Mapa + 3 Cards)
+       ========================================================================== -->
+    <section class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span>Pally: Sua Companheira de Viagem</span>
+          </div>
+          <h1 class="hero-title">
+            Não planeje sua viagem. <strong>Viva sua viagem.</strong>
+          </h1>
+          <p class="hero-subtitle">
+            Pally é uma companheira de viagem proativa (mobile-first) que
+            acompanha seus passos. Sem chatbots cansativos. Uma interface visual
+            inteligente que lê seu contexto e sugere o que fazer a seguir.
+          </p>
+          <div class="hero-actions">
+            <a href="#waitlist" class="btn btn-primary">Acessar grátis</a>
+            <a href="#preview" class="btn btn-secondary">Ver demonstração</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <!-- Phone Mockup - Showing only the phone, centered and styled cleanly, no external float elements -->
+          <div class="phone-mockup">
+            <div class="phone-island"></div>
+            <div class="phone-screen">
+              <div class="app-header">
+                <div class="app-logo">
+                  <svg
+                    viewBox="0 0 444 465"
+                    width="24"
+                    height="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    style="flex-shrink: 0"
+                  >
+                    <defs>
+                      <linearGradient
+                        id="logo-grad-mobile"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="100%"
+                      >
+                        <stop offset="0%" stop-color="#00B4D8" />
+                        <stop offset="100%" stop-color="#7209B7" />
+                      </linearGradient>
+                    </defs>
+                    <g
+                      fill="url(#logo-grad-mobile)"
+                      transform="translate(0,465) scale(0.1,-0.1)"
+                    >
+                      <path
+                        d="M2050 3934 c-264 -33 -549 -138 -762 -281 -619 -415 -912 -1172 -732 -1888 106 -420 379 -800 746 -1039 383 -249 861 -339 1308 -245 138 29 239 64 379 130 202 96 315 174 470 323 214 208 350 417 440 679 130 376 133 756 10 1135 l-21 62 -56 -51 c-69 -61 -195 -125 -277 -140 -90 -17 -86 -15 -74 -46 24 -64 50 -216 55 -333 17 -335 -112 -674 -353 -930 -185 -197 -445 -339 -708 -385 -116 -20 -325 -21 -437 -1 -317 57 -610 234 -800 483 -181 236 -271 497 -271 788 0 345 133 665 378 910 363 364 911 474 1396 280 13 -5 21 11 43 78 31 95 87 187 158 261 27 28 48 51 48 53 0 7 -117 54 -204 82 -183 59 -273 73 -496 76 -113 2 -221 1 -240 -1z"
+                      />
+                      <path
+                        d="M3314 3716 c-86 -20 -159 -59 -224 -122 -103 -98 -146 -209 -138 -361 5 -82 10 -103 42 -169 175 -353 665 -351 834 3 36 77 37 80 37 198 0 118 -1 121 -37 195 -37 76 -111 161 -173 199 -96 58 -234 81 -341 57z"
+                      />
+                    </g>
+                  </svg>
+                  <div class="app-logo-text">Pally</div>
+                </div>
+                <div class="app-status">🌤️ 22°C</div>
+              </div>
+
+              <!-- Interactive Map Container -->
+              <div class="app-map-canvas" id="app-map-container">
+                <!-- Map wrapper grouping streets and pins to transform them together -->
+                <div class="map-wrapper" id="hero-map-wrapper">
+                  <!-- SVG do mapa com ruas e lagos de Tóquio simplificados -->
+                  <svg
+                    viewBox="0 0 400 400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid slice"
+                  >
+                    <!-- Fundo / Terra -->
+                    <rect width="400" height="400" fill="#FAF6EE" />
+
+                    <!-- Lago / Rio Sumida -->
+                    <path
+                      d="M 280,0 Q 240,150 350,300 T 400,400 L 400,0 Z"
+                      fill="#C5E2F6"
+                    />
+
+                    <!-- Áreas verdes de parques -->
+                    <circle cx="160" cy="120" r="45" fill="#D2E8D4" />
+                    <!-- Parque Ueno -->
+                    <circle cx="90" cy="270" r="30" fill="#D2E8D4" />
+                    <!-- Café Kitsuné -->
+                    <rect
+                      x="250"
+                      y="70"
+                      width="80"
+                      height="40"
+                      rx="15"
+                      fill="#D2E8D4"
+                    />
+
+                    <!-- Ruas -->
+                    <path
+                      d="M 0,100 L 400,100 M 0,220 L 400,220 M 0,330 L 400,330"
+                      stroke="#FFFFFF"
+                      stroke-width="6"
+                      fill="none"
+                    />
+                    <path
+                      d="M 120,0 L 120,400 M 240,0 L 240,400 M 340,0 L 340,400"
+                      stroke="#FFFFFF"
+                      stroke-width="6"
+                      fill="none"
+                    />
+                    <path
+                      d="M 0,0 L 400,400"
+                      stroke="#FFFFFF"
+                      stroke-width="4"
+                      stroke-dasharray="8,8"
+                      fill="none"
+                      opacity="0.6"
+                    />
+                  </svg>
+
+                  <!-- Overlay SVG for percentage-based route line alignment to prevent offset/crops -->
+                  <svg
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    style="
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      width: 100%;
+                      height: 100%;
+                      pointer-events: none;
+                      z-index: 2;
+                    "
+                  >
+                    <path
+                      class="route-line"
+                      id="route-line"
+                      d="M 50,50 Q 65,35 80.8,27.8"
+                      stroke="#00B4D8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      fill="none"
+                    />
+                  </svg>
+
+                  <!-- User coordinate -->
+                  <div class="user-position" aria-label="Sua localização"></div>
+
+                  <!-- Interactive Pins -->
+                  <div
+                    class="map-pin active"
+                    id="pin-1"
+                    data-index="0"
+                    aria-label="Pino 1: Parque Ueno"
+                  >
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                        fill="#00B4D8"
+                      />
+                    </svg>
+                  </div>
+
+                  <div
+                    class="map-pin"
+                    id="pin-2"
+                    data-index="1"
+                    aria-label="Pino 2: Café Kitsuné"
+                  >
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                        fill="#00B4D8"
+                      />
+                    </svg>
+                  </div>
+
+                  <div
+                    class="map-pin"
+                    id="pin-3"
+                    data-index="2"
+                    aria-label="Pino 3: teamLab Borderless"
+                  >
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                        fill="#00B4D8"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Top Notification for Plotted Route -->
+              <div class="app-route-notification" id="hero-route-notification">
+                <div class="route-notif-icon">🧭</div>
+                <div class="route-notif-body">
+                  <div class="route-notif-title">Rota traçada!</div>
+                  <div class="route-notif-desc">
+                    12 min de caminhada até teamLab Borderless
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detail Card (hidden by default) -->
+              <div class="app-detail-card" id="poi-detail-card">
+                <div class="detail-header">
+                  <span class="detail-category">Arte Digital</span>
+                  <span class="detail-rating">⭐ 4.9 (2.4k)</span>
+                </div>
+                <div class="detail-name">teamLab Borderless</div>
+                <div class="detail-desc">
+                  Um mundo sem fronteiras criado por computação gráfica em tempo
+                  real. Arte tridimensional imersiva e interativa.
+                </div>
+                <div class="detail-meta">
+                  <div class="detail-meta-item">
+                    <span class="detail-meta-label">Distância</span>
+                    <span class="detail-meta-val">🚶 12 min (1.2 km)</span>
+                  </div>
+                  <div class="detail-meta-item">
+                    <span class="detail-meta-label">Funcionamento</span>
+                    <span class="detail-meta-val">Aberto (10h - 21h)</span>
+                  </div>
+                </div>
+                <div class="detail-actions">
+                  <button class="btn-detail btn-ticket" id="btn-view-ticket">
+                    <span>🎟️ Ver Ingresso</span>
+                  </button>
+                  <button class="btn-detail btn-route" id="btn-plot-route">
+                    <span>Traçar Rota</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Contextual Cards Container (All 3 Cards stacked at bottom) -->
+              <div class="app-cards-container">
+                <!-- Card 0: Parque Ueno -->
+                <div
+                  class="app-interactive-card selected"
+                  id="hero-card-0"
+                  data-index="0"
+                >
+                  <div class="card-body">
+                    <div class="card-name">Parque Ueno</div>
+                    <div class="card-desc">
+                      Caminhada sob as cerejeiras e templos históricos.
+                    </div>
+                  </div>
+                  <div class="card-time">
+                    <span>🚶 10 min</span>
+                  </div>
+                </div>
+
+                <!-- Card 1: Café Kitsuné -->
+                <div
+                  class="app-interactive-card"
+                  id="hero-card-1"
+                  data-index="1"
+                >
+                  <div class="card-body">
+                    <div class="card-name">Café Kitsuné</div>
+                    <div class="card-desc">
+                      Matcha latte artesanal e ambiente descontraído.
+                    </div>
+                  </div>
+                  <div class="card-time">
+                    <span>🚶 5 min</span>
+                  </div>
+                </div>
+
+                <!-- Card 2: teamLab Borderless -->
+                <div
+                  class="app-interactive-card"
+                  id="hero-card-2"
+                  data-index="2"
+                >
+                  <div class="card-body">
+                    <div class="card-name">teamLab Borderless</div>
+                    <div class="card-desc">
+                      Exposição de arte digital imersiva e interativa.
+                    </div>
+                  </div>
+                  <div class="card-time">
+                    <span>🚶 12 min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       3. O Que É Section
+       ========================================================================== -->
+    <section class="what-is-section" id="oque-e">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tagline">O Conceito</span>
+          <h2>O que é uma "Companheira de Viagem"?</h2>
+          <p class="section-description">
+            Pally não quer conversar com você por texto por horas. Ela é uma
+            inteligência visual silenciosa que entende onde você está, que horas
+            são e o que você prefere — exibindo opções diretamente na tela.
+          </p>
+        </div>
+
+        <div class="concept-grid">
+          <div class="concept-card chatbot-card">
+            <h3 class="concept-card-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                />
+              </svg>
+              Assistentes / Chatbots comuns
+            </h3>
+            <div class="concept-body">
+              <div class="concept-item">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#EF4444"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                </svg>
+                <span
+                  >Exige digitação constante e leitura de longos parágrafos
+                  explicativos.</span
+                >
+              </div>
+              <div class="concept-item">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#EF4444"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                </svg>
+                <span
+                  >Reações passivas. Só ajuda quando você inicia a conversa e
+                  faz perguntas.</span
+                >
+              </div>
+              <div class="concept-item">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#EF4444"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                </svg>
+                <span
+                  >Desconectado do seu contexto real de deslocamento, clima e
+                  localização.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="concept-card pally-card">
+            <h3 class="concept-card-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+              Pally — A Companheira de Viagem
+            </h3>
+            <div class="concept-body">
+              <div class="concept-item">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#10B981"
+                  stroke-width="2"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span
+                  ><strong>Visual de um toque:</strong> Apresenta 3 cards de
+                  sugestões com atalhos diretos para você navegar ou abrir seus
+                  apps de reserva.</span
+                >
+              </div>
+              <div class="concept-item">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#10B981"
+                  stroke-width="2"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span
+                  ><strong>Sugestões contextualizadas:</strong> Recomendações
+                  inteligentes baseadas no clima atual, horário e localização no
+                  destino.</span
+                >
+              </div>
+              <div class="concept-item">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#10B981"
+                  stroke-width="2"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span
+                  ><strong>Planejamento assistido:</strong> Facilita a adaptação
+                  do seu roteiro sugerindo novas alternativas de forma
+                  proativa.</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       4. Features Section (Empathetic and Contextual B2C features)
+       ========================================================================== -->
+    <section class="features-section" id="features">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tagline">Funcionalidades</span>
+          <h2>Tudo o que sua viagem precisa</h2>
+          <p class="section-description">
+            A tecnologia mais avançada de planejamento assistido e suporte,
+            compactada em uma interface leve e inovadora.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Feature 1 -->
+          <div class="glass-card feature-card">
+            <div class="feature-icon-wrapper">
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                />
+                <path d="M12 6v6l4 2" />
+              </svg>
+            </div>
+            <h3 class="feature-title">Roteiros Inteligentes</h3>
+            <p class="feature-desc">
+              Planeje sua viagem de forma inteligente. Pally sugere ajustes no
+              seu roteiro com base em novos horários, clima ou trânsito local.
+            </p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="glass-card feature-card purple-theme">
+            <div class="feature-icon-wrapper">
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                />
+              </svg>
+            </div>
+            <h3 class="feature-title">Assistente Contextual</h3>
+            <p class="feature-desc">
+              Sugestões proativas e oportunas. Pally entende o que acontece ao
+              seu redor e oferece atalhos rápidos para facilitar suas decisões.
+            </p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="glass-card feature-card">
+            <div class="feature-icon-wrapper">
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <rect x="7" y="7" width="3" height="3" />
+                <rect x="14" y="7" width="3" height="3" />
+                <rect x="7" y="14" width="3" height="3" />
+                <rect x="14" y="14" width="3" height="3" />
+              </svg>
+            </div>
+            <h3 class="feature-title">Cards Contextuais</h3>
+            <p class="feature-desc">
+              Os 3 cards exibidos refletem o que está aberto, o clima do momento
+              e suas preferências pessoais no destino.
+            </p>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="glass-card feature-card purple-theme">
+            <div class="feature-icon-wrapper">
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" />
+                <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
+              </svg>
+            </div>
+            <h3 class="feature-title">Inteligência Empática</h3>
+            <p class="feature-desc">
+              Pally se adapta ao seu ritmo de viagem. Se você prefere dias
+              tranquilos ou cheios de atividades, as sugestões acompanham seu
+              estilo.
+            </p>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="glass-card feature-card">
+            <div class="feature-icon-wrapper">
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </div>
+            <h3 class="feature-title">Funcionamento Offline</h3>
+            <p class="feature-desc">
+              Mapas e sugestões salvas continuam acessíveis mesmo se você perder
+              a conexão com a internet durante os passeios.
+            </p>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="glass-card feature-card purple-theme">
+            <div class="feature-icon-wrapper">
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
+            </div>
+            <h3 class="feature-title">Jornadas Multicidades</h3>
+            <p class="feature-desc">
+              O app aprende com suas escolhas anteriores para sugerir novos
+              pontos interessantes em cada destino que você visitar.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       5. Como Funciona (3 Passos Interativos no Scroll - Reordered B2C)
+       ========================================================================== -->
+    <section class="how-it-works-section" id="como-funciona">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tagline">O Caminho</span>
+          <h2>Apenas três passos para fluir</h2>
+          <p class="section-description">
+            Como a Pally acompanha você antes e durante a sua jornada.
+          </p>
+        </div>
+
+        <div class="timeline-container">
+          <!-- Linha do tempo visual -->
+          <div class="timeline-line" aria-hidden="true">
+            <div class="timeline-progress" id="timeline-progress-bar"></div>
+          </div>
+
+          <!-- Passo 1: Mapeamento de preferências -->
+          <div class="timeline-item active" id="step-1">
+            <div class="timeline-node">1</div>
+            <div class="timeline-content glass-card">
+              <h3 class="timeline-step-title">Mapeamento de preferências</h3>
+              <p class="timeline-step-desc">
+                Sem questionários chatos. Com poucos ajustes rápidos, mapeamos
+                seu perfil ideal de viagem e seus interesses preferidos.
+              </p>
+            </div>
+          </div>
+
+          <!-- Passo 2: Planejamento -->
+          <div class="timeline-item" id="step-2">
+            <div class="timeline-node">2</div>
+            <div class="timeline-content glass-card">
+              <h3 class="timeline-step-title">Planejamento</h3>
+              <p class="timeline-step-desc">
+                A Pally ajuda você a estruturar seu roteiro do dia com sugestões
+                inteligentes que combinam perfeitamente com seu perfil.
+              </p>
+            </div>
+          </div>
+
+          <!-- Passo 3: Sugestões contextuais -->
+          <div class="timeline-item" id="step-3">
+            <div class="timeline-node">3</div>
+            <div class="timeline-content glass-card">
+              <h3 class="timeline-step-title">Sugestões contextuais</h3>
+              <p class="timeline-step-desc">
+                Durante a viagem, já no seu destino, a Pally entende o contexto
+                em que está abrindo o app (clima, horário e sua localização
+                exata) para sugerir o que faz mais sentido naquele momento.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       6. Mockup/App Preview (Interação com Situações de Contexto)
+       ========================================================================== -->
+    <section class="preview-section" id="preview">
+      <div class="container preview-grid">
+        <div class="preview-content">
+          <span class="section-tagline">Demonstração Interativa</span>
+          <h2>A tela inicial que se adapta ao momento</h2>
+          <p class="section-description">
+            A Pally se adapta em tempo real durante toda a sua jornada, em
+            qualquer lugar do mundo. Ela sugere desvios e alternativas
+            inteligentes com base no contexto do momento, mantendo sua
+            programação original acessível ao lado das novas recomendações.
+          </p>
+
+          <div
+            class="time-toggles"
+            role="tablist"
+            aria-label="Selecione o cenário de contexto"
+          >
+            <button
+              class="time-btn active"
+              role="tab"
+              aria-selected="true"
+              aria-controls="preview-phone"
+              id="btn-chuva"
+              data-situation="chuva"
+            >
+              <span>🌧️</span> Clima
+            </button>
+            <button
+              class="time-btn"
+              role="tab"
+              aria-selected="false"
+              aria-controls="preview-phone"
+              id="btn-proximidade"
+              data-situation="proximidade"
+            >
+              <span>📍</span> Proximidade
+            </button>
+            <button
+              class="time-btn"
+              role="tab"
+              aria-selected="false"
+              aria-controls="preview-phone"
+              id="btn-horario"
+              data-situation="horario"
+            >
+              <span>🌅</span> Horário
+            </button>
+          </div>
+
+          <div style="font-size: 0.95rem; color: var(--text-secondary)">
+            <p id="time-description">
+              <strong>Contexto de Clima:</strong> A Pally monitora a previsão do
+              tempo local em tempo real. Se começar a chover, ela reescreve suas
+              sugestões para priorizar exposições imersivas e locais fechados,
+              mantendo sua rota original disponível.
+            </p>
+          </div>
+        </div>
+
+        <div class="preview-visual">
+          <div class="phone-mockup-preview" id="preview-phone">
+            <div class="phone-island"></div>
+            <div class="phone-screen">
+              <div
+                class="app-header"
+                style="background: rgba(255, 255, 255, 0.9)"
+              >
+                <div class="app-logo">
+                  <svg
+                    viewBox="0 0 444 465"
+                    width="24"
+                    height="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    style="flex-shrink: 0"
+                  >
+                    <g
+                      fill="url(#logo-grad-mobile)"
+                      transform="translate(0,465) scale(0.1,-0.1)"
+                    >
+                      <path
+                        d="M2050 3934 c-264 -33 -549 -138 -762 -281 -619 -415 -912 -1172 -732 -1888 106 -420 379 -800 746 -1039 383 -249 861 -339 1308 -245 138 29 239 64 379 130 202 96 315 174 470 323 214 208 350 417 440 679 130 376 133 756 10 1135 l-21 62 -56 -51 c-69 -61 -195 -125 -277 -140 -90 -17 -86 -15 -74 -46 24 -64 50 -216 55 -333 17 -335 -112 -674 -353 -930 -185 -197 -445 -339 -708 -385 -116 -20 -325 -21 -437 -1 -317 57 -610 234 -800 483 -181 236 -271 497 -271 788 0 345 133 665 378 910 363 364 911 474 1396 280 13 -5 21 11 43 78 31 95 87 187 158 261 27 28 48 51 48 53 0 7 -117 54 -204 82 -183 59 -273 73 -496 76 -113 2 -221 1 -240 -1z"
+                      />
+                      <path
+                        d="M3314 3716 c-86 -20 -159 -59 -224 -122 -103 -98 -146 -209 -138 -361 5 -82 10 -103 42 -169 175 -353 665 -351 834 3 36 77 37 80 37 198 0 118 -1 121 -37 195 -37 76 -111 161 -173 199 -96 58 -234 81 -341 57z"
+                      />
+                    </g>
+                  </svg>
+                  <div class="app-logo-text">Pally</div>
+                </div>
+                <div class="app-status" id="preview-time-tag">🌧️ Chuva</div>
+              </div>
+
+              <!-- Camadas de mapas para transição de cores -->
+              <div class="app-map-canvas" id="preview-map-container">
+                <!-- Mapa da Chuva (Clima) -->
+                <div class="map-preview-layer active" id="map-layer-chuva">
+                  <div
+                    class="map-wrapper"
+                    id="preview-map-wrapper-chuva"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                      transform-origin: center center;
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 320 300"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="xMidYMid slice"
+                    >
+                      <rect width="100%" height="100%" fill="#FAF6EE" />
+                      <path
+                        d="M 200,0 C 180,100 290,200 320,300 L 320,0 Z"
+                        fill="#CBDDE6"
+                      />
+                      <circle cx="90" cy="110" r="40" fill="#DAE3DB" />
+                      <circle cx="230" cy="180" r="20" fill="#E0E0E0" />
+                      <path
+                        d="M0,80 L320,80 M0,180 L320,180"
+                        stroke="#FFF"
+                        stroke-width="5"
+                      />
+                      <path
+                        d="M120,0 L120,300 M220,0 L220,300"
+                        stroke="#FFF"
+                        stroke-width="5"
+                      />
+                    </svg>
+                    <!-- Route Line overlay -->
+                    <svg
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                      style="
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        pointer-events: none;
+                        z-index: 2;
+                      "
+                    >
+                      <path
+                        class="route-line preview-route-line"
+                        id="route-line-chuva"
+                        d=""
+                        stroke="#7C3AED"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        fill="none"
+                      />
+                    </svg>
+                    <!-- User position -->
+                    <div
+                      class="user-position"
+                      aria-label="Sua localização"
+                    ></div>
+                    <!-- Pins -->
+                    <div
+                      class="map-pin preview-pin"
+                      data-index="0"
+                      style="top: 36.6%; left: 28.1%"
+                      aria-label="Pin 0: Museu Nacional de Tóquio"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                          fill="#7C3AED"
+                        />
+                      </svg>
+                    </div>
+                    <div
+                      class="map-pin preview-pin"
+                      data-index="1"
+                      style="top: 60%; left: 71.9%"
+                      aria-label="Pin 1: Café Aoyama Flower Market"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                          fill="#7C3AED"
+                        />
+                      </svg>
+                    </div>
+                    <div
+                      class="map-pin preview-pin"
+                      data-index="2"
+                      style="top: 20%; left: 50%"
+                      aria-label="Pin 2: teamLab Planets"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                          fill="#7C3AED"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Mapa da Proximidade -->
+                <div class="map-preview-layer" id="map-layer-proximidade">
+                  <div
+                    class="map-wrapper"
+                    id="preview-map-wrapper-proximidade"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                      transform-origin: center center;
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 320 300"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="xMidYMid slice"
+                    >
+                      <rect width="100%" height="100%" fill="#EAEFF2" />
+                      <path
+                        d="M 200,0 C 180,100 290,200 320,300 L 320,0 Z"
+                        fill="#BCE2F7"
+                      />
+                      <circle cx="150" cy="120" r="35" fill="#D2E8D4" />
+                      <path
+                        d="M0,80 L320,80 M0,180 L320,180"
+                        stroke="#FFF"
+                        stroke-width="5"
+                      />
+                      <path
+                        d="M120,0 L120,300 M220,0 L220,300"
+                        stroke="#FFF"
+                        stroke-width="5"
+                      />
+                    </svg>
+                    <!-- Route Line overlay -->
+                    <svg
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                      style="
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        pointer-events: none;
+                        z-index: 2;
+                      "
+                    >
+                      <path
+                        class="route-line preview-route-line"
+                        id="route-line-proximidade"
+                        d=""
+                        stroke="#00B4D8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        fill="none"
+                      />
+                    </svg>
+                    <!-- User position -->
+                    <div
+                      class="user-position"
+                      aria-label="Sua localização"
+                    ></div>
+                    <!-- Pins -->
+                    <div
+                      class="map-pin preview-pin"
+                      data-index="0"
+                      style="top: 40%; left: 46.9%"
+                      aria-label="Pin 0: Omoide Yokocho"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                          fill="#00B4D8"
+                        />
+                      </svg>
+                    </div>
+                    <div
+                      class="map-pin preview-pin"
+                      data-index="1"
+                      style="top: 73.3%; left: 21.9%"
+                      aria-label="Pin 1: Don Don Donki Shinjuku"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                          fill="#00B4D8"
+                        />
+                      </svg>
+                    </div>
+                    <div
+                      class="map-pin preview-pin"
+                      data-index="2"
+                      style="top: 30%; left: 75%"
+                      aria-label="Pin 2: Café L'Ambre"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                          fill="#00B4D8"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Mapa do Horário (Sunset) -->
+                <div class="map-preview-layer" id="map-layer-horario">
+                  <div
+                    class="map-wrapper"
+                    id="preview-map-wrapper-horario"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                      transform-origin: center center;
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 320 300"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="xMidYMid slice"
+                    >
+                      <defs>
+                        <linearGradient
+                          id="sunset-grad-preview"
+                          x1="0%"
+                          y1="0%"
+                          x2="100%"
+                          y2="100%"
+                        >
+                          <stop offset="0%" stop-color="#FF7E5F" />
+                          <stop offset="100%" stop-color="#FEB47B" />
+                        </linearGradient>
+                        <linearGradient
+                          id="river-sunset-preview"
+                          x1="0%"
+                          y1="0%"
+                          x2="100%"
+                          y2="100%"
+                        >
+                          <stop offset="0%" stop-color="#2F80ED" />
+                          <stop offset="100%" stop-color="#56CCF2" />
+                        </linearGradient>
+                      </defs>
+                      <rect
+                        width="100%"
+                        height="100%"
+                        fill="url(#sunset-grad-preview)"
+                      />
+                      <path
+                        d="M 200,0 C 180,100 290,200 320,300 L 320,0 Z"
+                        fill="url(#river-sunset-preview)"
+                        opacity="0.8"
+                      />
+                      <circle
+                        cx="140"
+                        cy="160"
+                        r="25"
+                        fill="#C0392B"
+                        opacity="0.15"
+                      />
+                      <path
+                        d="M0,80 L320,80 M0,180 L320,180"
+                        stroke="#FFF"
+                        stroke-width="3"
+                        opacity="0.4"
+                      />
+                      <path
+                        d="M120,0 L120,300 M220,0 L220,300"
+                        stroke="#FFF"
+                        stroke-width="3"
+                        opacity="0.4"
+                      />
+                    </svg>
+                    <!-- Route Line overlay -->
+                    <svg
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                      style="
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        pointer-events: none;
+                        z-index: 2;
+                      "
+                    >
+                      <path
+                        class="route-line preview-route-line"
+                        id="route-line-horario"
+                        d=""
+                        stroke="#FF007F"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        fill="none"
+                      />
+                    </svg>
+                    <!-- User position -->
+                    <div
+                      class="user-position"
+                      aria-label="Sua localização"
+                    ></div>
+                    <!-- Pins -->
+                    <div
+                      class="map-pin preview-pin"
+                      data-index="0"
+                      style="top: 33.3%; left: 65.6%"
+                      aria-label="Pin 0: Governo Metropolitano"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                          fill="#FF007F"
+                        />
+                      </svg>
+                    </div>
+                    <div
+                      class="map-pin preview-pin"
+                      data-index="1"
+                      style="top: 63.3%; left: 25%"
+                      aria-label="Pin 1: Mori Art Museum"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                          fill="#FF007F"
+                        />
+                      </svg>
+                    </div>
+                    <div
+                      class="map-pin preview-pin"
+                      data-index="2"
+                      style="top: 80%; left: 50%"
+                      aria-label="Pin 2: Meguro River Walk"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+                          fill="#FF007F"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Chat Bubble superior do celular como Notificação Sutil -->
+                <div
+                  class="app-notification"
+                  id="preview-pally-bubble"
+                  style="
+                    opacity: 1;
+                    transform: translateY(0);
+                    top: 8px;
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                  "
+                >
+                  <div
+                    class="notification-icon"
+                    id="preview-pally-bubble-icon"
+                    style="
+                      background: transparent !important;
+                      border-radius: 0;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 1.3rem;
+                      box-shadow: none;
+                    "
+                  >
+                    🌧️
+                  </div>
+                  <div class="notification-content">
+                    <div class="notification-title">Pally</div>
+                    <div class="notification-text" id="preview-bubble-text">
+                      Alerta de clima! Chuva detectada na sua localização.
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Top Notification for Plotted Route -->
+                <div
+                  class="app-route-notification"
+                  id="preview-route-notification"
+                  style="z-index: 99"
+                >
+                  <div class="route-notif-icon">🧭</div>
+                  <div class="route-notif-body">
+                    <div class="route-notif-title">Rota traçada!</div>
+                    <div class="route-notif-desc" id="preview-route-desc">
+                      12 min de caminhada até teamLab Planets
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Detail Card (hidden by default) -->
+                <div
+                  class="app-detail-card"
+                  id="preview-detail-card"
+                  style="z-index: 90"
+                >
+                  <div class="detail-header">
+                    <span class="detail-category" id="preview-detail-category"
+                      >Arte Imersiva</span
+                    >
+                    <span class="detail-rating" id="preview-detail-rating"
+                      >⭐ 4.9 (42k)</span
+                    >
+                  </div>
+                  <div class="detail-name" id="preview-detail-name">
+                    teamLab Planets
+                  </div>
+                  <div class="detail-desc" id="preview-detail-desc">
+                    Exposição digital interativa onde você caminha descalço.
+                  </div>
+                  <div class="detail-meta">
+                    <div class="detail-meta-item">
+                      <span class="detail-meta-label">Distância</span>
+                      <span class="detail-meta-val" id="preview-detail-distance"
+                        >🚶 20 min (1.8 km)</span
+                      >
+                    </div>
+                    <div class="detail-meta-item">
+                      <span class="detail-meta-label">Funcionamento</span>
+                      <span class="detail-meta-val" id="preview-detail-hours"
+                        >Aberto (09h - 22h)</span
+                      >
+                    </div>
+                  </div>
+                  <div class="detail-actions">
+                    <button
+                      class="btn-detail btn-route"
+                      id="preview-btn-plot-route"
+                      style="width: 100%"
+                    >
+                      <span>Traçar Rota</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cards dinâmicos que mudam de acordo com a situação selecionada -->
+              <div class="app-cards-stack" id="preview-cards-stack">
+                <!-- Cards dinâmicos renderizados via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       8. CTA Final & Lead Form (B2C Only)
+       ========================================================================== -->
+    <section class="cta-final-section" id="waitlist">
+      <div class="container">
+        <div class="glass-card cta-box">
+          <h2 class="cta-heading">Pronto para a sua próxima viagem?</h2>
+          <p class="cta-desc">
+            Acesse a Pally e tenha a sua própria Companheira de Viagem
+            orientando cada passo do seu caminho de forma tranquila e
+            inteligente direto no seu navegador.
+          </p>
+
+          <!-- Form de leads B2C -->
+          <div class="lead-form-wrapper">
+            <h3 class="lead-form-title">Faça parte da nossa lista de espera</h3>
+            <form class="lead-form" id="contact-form" novalidate>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label" for="form-name">Nome</label>
+                  <input
+                    class="form-input"
+                    type="text"
+                    id="form-name"
+                    placeholder="Seu nome"
+                    required
+                    autocomplete="name"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="form-email">E-mail</label>
+                  <input
+                    class="form-input"
+                    type="email"
+                    id="form-email"
+                    placeholder="seu@email.com"
+                    required
+                    autocomplete="email"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="form-dest"
+                  >Próximo destino planejado</label
+                >
+                <input
+                  class="form-input"
+                  type="text"
+                  id="form-dest"
+                  placeholder="Ex: Paris, Tóquio"
+                  required
+                />
+              </div>
+
+              <button class="btn btn-primary form-submit-btn" type="submit">
+                Entrar na Lista de Espera
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div
+      class="success-modal"
+      id="success-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="glass-card success-modal-card">
+        <div class="success-icon-wrapper">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <h3 class="success-title" id="modal-title">Inscrição Confirmada!</h3>
+        <p class="success-desc" id="success-modal-msg">
+          Obrigado por se cadastrar. Confirmamos seu interesse e enviaremos o
+          convite de acesso ao Pally para a sua viagem planejada!
+        </p>
+        <button
+          class="btn btn-primary"
+          id="close-modal-btn"
+          style="padding: 10px 24px; font-size: 0.9rem"
+        >
+          Fechar
+        </button>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+       9. Footer
+       ========================================================================== -->
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-col">
+          <a href="#" class="nav-logo" style="margin-bottom: 10px">
+            <!-- Novo SVG Logo do Pallas no Footer (#00B4D8) -->
+            <svg
+              viewBox="0 0 444 465"
+              width="28"
+              height="28"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <g fill="#00B4D8">
+                <path
+                  d="M2050 3934 c-264 -33 -549 -138 -762 -281 -619 -415 -912 -1172 -732 -1888 106 -420 379 -800 746 -1039 383 -249 861 -339 1308 -245 138 29 239 64 379 130 202 96 315 174 470 323 214 208 350 417 440 679 130 376 133 756 10 1135 l-21 62 -56 -51 c-69 -61 -195 -125 -277 -140 -90 -17 -86 -15 -74 -46 24 -64 50 -216 55 -333 17 -335 -112 -674 -353 -930 -185 -197 -445 -339 -708 -385 -116 -20 -325 -21 -437 -1 -317 57 -610 234 -800 483 -181 236 -271 497 -271 788 0 345 133 665 378 910 363 364 911 474 1396 280 13 -5 21 11 43 78 31 95 87 187 158 261 27 28 48 51 48 53 0 7 -117 54 -204 82 -183 59 -273 73 -496 76 -113 2 -221 1 -240 -1z"
+                />
+                <path
+                  d="M3314 3716 c-86 -20 -159 -59 -224 -122 -103 -98 -146 -209 -138 -361 5 -82 10 -103 42 -169 175 -353 665 -351 834 3 36 77 37 80 37 198 0 118 -1 121 -37 195 -37 76 -111 161 -173 199 -96 58 -234 81 -341 57z"
+                />
+              </g>
+            </svg>
+            <span>Pallas</span>
+          </a>
+          <p class="footer-about">
+            Pallas Technologies Ltda. — Transformando a mobilidade turística com
+            inteligência estratégica e empática durante o seu trajeto.
+          </p>
+          <div class="footer-socials">
+            <a href="#" class="social-btn" aria-label="LinkedIn">
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"
+                />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="Instagram">
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path
+                  d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37zM17.5 6.5h.01"
+                />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="Twitter / X">
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>App</h5>
+          <ul class="footer-links">
+            <li>
+              <a href="#features" class="footer-link-item">Funcionalidades</a>
+            </li>
+            <li>
+              <a href="#como-funciona" class="footer-link-item"
+                >Como funciona</a
+              >
+            </li>
+            <li>
+              <a href="#preview" class="footer-link-item">Demonstração</a>
+            </li>
+            <li><a href="#" class="footer-link-item">Segurança de Dados</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Companhia</h5>
+          <ul class="footer-links">
+            <li><a href="#features" class="footer-link-item">Sobre Nós</a></li>
+            <li><a href="#" class="footer-link-item">Segurança de Dados</a></li>
+            <li><a href="#" class="footer-link-item">Termos de Serviço</a></li>
+            <li><a href="#" class="footer-link-item">Contato</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Novidades</h5>
+          <p class="footer-about" style="font-size: 0.8rem">
+            Inscreva-se na nossa newsletter técnica para receber novidades sobre
+            inteligência contextual aplicada ao turismo.
+          </p>
+          <div style="display: flex; gap: 8px; margin-top: 8px">
+            <input
+              type="email"
+              placeholder="Seu e-mail"
+              class="form-input"
+              style="flex: 1; padding: 8px 12px; font-size: 0.85rem"
+              aria-label="E-mail para newsletter"
+            />
+            <button
+              class="btn btn-primary"
+              style="padding: 8px 16px; font-size: 0.85rem"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container footer-bottom">
+        <span>Pallas & Pally © 2026. Todos os direitos reservados.</span>
+        <div class="footer-bottom-links">
+          <a href="#" class="footer-link-item" style="font-size: 0.8rem"
+            >Termos de Uso</a
+          >
+          <a href="#" class="footer-link-item" style="font-size: 0.8rem"
+            >Privacidade</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <!-- ==========================================================================
+       10. Scripts JS (Interações & Fallbacks)
+       ========================================================================== -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        /* ==========================================================================
+         A. Menu Sanduíche Mobile
+         ========================================================================== */
+        const burgerToggle = document.getElementById("burger-toggle");
+        const navMenu = document.getElementById("nav-menu");
+
+        burgerToggle.addEventListener("click", () => {
+          const isExpanded =
+            burgerToggle.getAttribute("aria-expanded") === "true";
+          burgerToggle.setAttribute("aria-expanded", !isExpanded);
+          navMenu.classList.toggle("active");
+
+          // Modifica traços do sanduíche
+          const spans = burgerToggle.querySelectorAll("span");
+          if (!isExpanded) {
+            spans[0].style.transform = "rotate(45deg) translate(5px, 5px)";
+            spans[1].style.opacity = "0";
+            spans[2].style.transform = "rotate(-45deg) translate(5px, -5px)";
+          } else {
+            spans[0].style.transform = "none";
+            spans[1].style.opacity = "1";
+            spans[2].style.transform = "none";
+          }
+        });
+
+        // Fecha o menu ao clicar em um link
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("click", () => {
+            navMenu.classList.remove("active");
+            burgerToggle.setAttribute("aria-expanded", "false");
+            const spans = burgerToggle.querySelectorAll("span");
+            spans[0].style.transform = "none";
+            spans[1].style.opacity = "1";
+            spans[2].style.transform = "none";
+          });
+        });
+
+        /* ==========================================================================
+         B. Fallback para Shrinking Header no Scroll (Firefox e navegadores legados)
+         ========================================================================== */
+        if (
+          !CSS.supports(
+            "(animation-timeline: scroll()) and (animation-range: 0% 100%)",
+          )
+        ) {
+          const header = document.querySelector(".nav-header");
+          window.addEventListener("scroll", () => {
+            if (window.scrollY > 50) {
+              header.style.height = "64px";
+              header.style.background = "rgba(255, 255, 255, 0.9)";
+              header.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.04)";
+              header.style.borderBottomColor = "rgba(0, 180, 216, 0.1)";
+            } else {
+              header.style.height = "80px";
+              header.style.background = "rgba(250, 250, 250, 0.7)";
+              header.style.boxShadow = "none";
+              header.style.borderBottomColor = "rgba(0, 180, 216, 0.04)";
+            }
+          });
+        }
+
+        /* ==========================================================================
+         C. Interação Especial no Hero Phone Mockup (Unified transformations)
+         ========================================================================== */
+        const mapWrapper = document.getElementById("hero-map-wrapper");
+        const pins = document.querySelectorAll("#hero-map-wrapper .map-pin");
+        const heroCards = document.querySelectorAll(
+          ".app-cards-container .app-interactive-card",
+        );
+        const cardsContainer = document.querySelector(".app-cards-container");
+
+        const routeLine = document.getElementById("route-line");
+        const detailCard = document.getElementById("poi-detail-card");
+        const routeNotification = document.getElementById(
+          "hero-route-notification",
+        );
+        const btnPlotRoute = document.getElementById("btn-plot-route");
+
+        // Increased scale values to guarantee full coverage of the map canvas (avoiding white gaps)
+        const heroTransforms = [
+          "scale(1.45) translate(5%, 12%)", // Pin 1: Parque Ueno
+          "scale(1.55) translate(22%, -12%)", // Pin 2: Café Kitsuné
+          "scale(1.45) translate(-15%, 15%)", // Pin 3: teamLab Borderless
+        ];
+
+        let simTimeout = null;
+
+        function runSimulation() {
+          // Step 0: Initial state - No card selected, no active pins, general map view
+          cardsContainer.classList.remove("collapsed");
+          detailCard.classList.remove("active");
+          routeNotification.classList.remove("active");
+          if (routeLine) routeLine.classList.remove("active");
+
+          // General map view centered, scale 1.35 to prevent gaps
+          mapWrapper.style.transform = "scale(1.35) translate(0%, 0%)";
+          pins.forEach((p) => p.classList.remove("active"));
+          heroCards.forEach((c) => c.classList.remove("selected"));
+
+          // Wait 3.5 seconds in the initial state
+          simTimeout = setTimeout(() => {
+            // Step 1: Select teamLab Borderless (Card 2) and perform click animation
+            heroCards[2].classList.add("selected");
+            pins[2].classList.add("active");
+            mapWrapper.style.transform = heroTransforms[2];
+
+            // Leve animação de clique no card
+            heroCards[2].style.transform = "scale(0.96)";
+            heroCards[2].style.transition = "transform 0.15s ease";
+            setTimeout(() => {
+              heroCards[2].style.transform = "";
+            }, 150);
+
+            // Let click animation finish, then start hiding recommendation cards
+            simTimeout = setTimeout(() => {
+              cardsContainer.classList.add("collapsed");
+
+              // After 0.3 seconds (300ms) delay, slide up the details card
+              simTimeout = setTimeout(() => {
+                detailCard.classList.add("active");
+
+                simTimeout = setTimeout(() => {
+                  // Step 2b: Simulate clicking "Traçar Rota"
+                  if (btnPlotRoute) {
+                    btnPlotRoute.classList.add("clicked");
+                    setTimeout(
+                      () => btnPlotRoute.classList.remove("clicked"),
+                      200,
+                    );
+                  }
+
+                  simTimeout = setTimeout(() => {
+                    // Step 3: Detail card slides down, Zoom out map to show route, Route draws, Notification appears
+                    detailCard.classList.remove("active");
+
+                    // Zoom out to fit route (coordinates 50%,50% and 75%,22%). Scale 1.35 prevents gaps.
+                    mapWrapper.style.transform =
+                      "scale(1.35) translate(-12.5%, 14%)";
+
+                    pins.forEach((p) => p.classList.remove("active")); // remove active status from others
+                    pins[2].classList.add("active"); // keep destination pin active
+
+                    if (routeLine) routeLine.classList.add("active");
+                    routeNotification.classList.add("active");
+
+                    simTimeout = setTimeout(() => {
+                      // Loop again
+                      runSimulation();
+                    }, 6000); // Wait 6 seconds showing the plotted route
+                  }, 800); // Click reaction delay
+                }, 3000); // Show details for 3 seconds
+              }, 300); // Wait 0.3 seconds before sliding up the details card
+            }, 200); // Collapse recommendation cards 200ms after selection
+          }, 3500); // Initial general view for 3.5 seconds
+        }
+
+        // Start the simulation
+        runSimulation();
+
+        /* ==========================================================================
+         D. Monitoramento do Progresso da Linha do Tempo no Scroll (Intersection Observer)
+         ========================================================================== */
+        const timelineSection = document.getElementById("como-funciona");
+        const timelineProgressBar = document.getElementById(
+          "timeline-progress-bar",
+        );
+        const timelineItems = document.querySelectorAll(".timeline-item");
+
+        const timelineObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+              }
+            });
+          },
+          {
+            threshold: 0.35,
+            rootMargin: "0px 0px -10% 0px",
+          },
+        );
+
+        timelineItems.forEach((item) => timelineObserver.observe(item));
+
+        // Atualização do preenchimento da barra de progresso no scroll
+        window.addEventListener("scroll", () => {
+          if (!timelineSection || !timelineProgressBar) return;
+
+          const rect = timelineSection.getBoundingClientRect();
+          const sectionHeight = rect.height;
+          const viewportHeight = window.innerHeight;
+
+          // Porcentagem de progresso de visualização da seção
+          const visibleDistance = viewportHeight * 0.8;
+          const totalScrollable = sectionHeight + visibleDistance - 150;
+          let scrollRatio = (visibleDistance - rect.top) / totalScrollable;
+
+          scrollRatio = Math.max(0, Math.min(scrollRatio, 1));
+          timelineProgressBar.style.height = `${scrollRatio * 100}%`;
+        });
+
+        /* ==========================================================================
+         E. Preview Interativo Dia / Tarde / Noite (B2C Slim Cards and notifications)
+         ========================================================================== */
+        const timeButtons = document.querySelectorAll(".time-btn");
+        const timeDesc = document.getElementById("time-description");
+        const timeTag = document.getElementById("preview-time-tag");
+        const bubblePreviewText = document.getElementById(
+          "preview-bubble-text",
+        );
+        const previewCardsStack = document.getElementById(
+          "preview-cards-stack",
+        );
+
+        // Preview mock UI elements
+        const previewDetailCard = document.getElementById(
+          "preview-detail-card",
+        );
+        const previewRouteNotification = document.getElementById(
+          "preview-route-notification",
+        );
+        const previewRouteDesc = document.getElementById("preview-route-desc");
+        const previewPallyBubble = document.getElementById(
+          "preview-pally-bubble",
+        );
+        const previewPallyBubbleIcon = document.getElementById(
+          "preview-pally-bubble-icon",
+        );
+        const previewBtnPlotRoute = document.getElementById(
+          "preview-btn-plot-route",
+        );
+
+        let activePreviewIndex = null;
+
+        const previewData = {
+          chuva: {
+            tag: "🌧️ Clima",
+            status: "🌧️ 17°C",
+            emoji: "🌧️",
+            bubble: "Alerta de clima! Chuva detectada na sua localização.",
+            desc: "<strong>Contexto de Clima:</strong> A Pally monitora a previsão do tempo local em tempo real. Se começar a chover, ela reescreve suas sugestões para priorizar exposições imersivas e locais fechados, mantendo sua rota original disponível.",
+            cards: [
+              {
+                name: "Museu Nacional de Tóquio",
+                walkTime: "10 min",
+                desc: "O maior museu do Japão, com arte tradicional espetacular.",
+                category: "Museu",
+                rating: "⭐ 4.6 (12k)",
+                fullDesc:
+                  "O maior e mais antigo museu do Japão, abrigando uma coleção espetacular de arte tradicional em galerias totalmente climatizadas.",
+                distance: "🚶 10 min (850 m)",
+                hours: "Aberto (09:30 - 17:00)",
+                routePath: "M 50,50 Q 40,45 28.1,36.6",
+                mapTransform: "scale(1.5) translate(21.9%, 13.4%)",
+              },
+              {
+                name: "Café Aoyama Flower Market",
+                walkTime: "15 min",
+                desc: "Café estufa repleto de flores frescas da estação.",
+                category: "Café Estufa",
+                rating: "⭐ 4.5 (1.8k)",
+                fullDesc:
+                  "Café aconchegante cercado por flores da estação, ideal para se abrigar da chuva em uma atmosfera perfumada e natural.",
+                distance: "🚶 15 min (1.2 km)",
+                hours: "Aberto (11:00 - 20:00)",
+                routePath: "M 50,50 Q 60,55 71.9,60",
+                mapTransform: "scale(1.5) translate(-21.9%, -10%)",
+              },
+              {
+                name: "teamLab Planets",
+                walkTime: "20 min",
+                desc: "Arte digital interativa onde você caminha pela água.",
+                category: "Arte Imersiva",
+                rating: "⭐ 4.9 (42k)",
+                fullDesc:
+                  "Exposição digital onde você caminha descalço pela água e se integra com projeções interativas tridimensionais em espaço fechado.",
+                distance: "🚶 20 min (1.8 km)",
+                hours: "Aberto (09:00 - 22:00)",
+                routePath: "M 50,50 L 50,20",
+                mapTransform: "scale(1.5) translate(0%, 30%)",
+              },
+            ],
+          },
+          proximidade: {
+            tag: "📍 Perto de Você",
+            status: "☀️ 22°C",
+            emoji: "📍",
+            bubble:
+              "Desvio sugerido! Você está perto de uma atração de alto interesse.",
+            desc: "<strong>Contexto de Proximidade:</strong> Ao detectar que você terminou uma visita mais cedo ou está passando perto de um ponto de alto interesse, a Pally sugere uma rápida descoberta perto da sua localização.",
+            cards: [
+              {
+                name: "Omoide Yokocho",
+                walkTime: "3 min",
+                desc: "Pequeno beco nostálgico famoso por espetinhos de yakitori.",
+                category: "Beco Tradicional",
+                rating: "⭐ 4.5 (8.2k)",
+                fullDesc:
+                  "Ruelas nostálgicas com pequenas barracas de yakitori sob lanternas vermelhas e vibe retro da era Showa.",
+                distance: "🚶 3 min (250 m)",
+                hours: "Aberto (17:00 - 23:30)",
+                routePath: "M 50,50 Q 48,45 46.9,40",
+                mapTransform: "scale(1.5) translate(3.1%, 10%)",
+              },
+              {
+                name: "Don Don Donki Shinjuku",
+                walkTime: "5 min",
+                desc: "Loja de departamentos gigante com de tudo, aberta 24h.",
+                category: "Mega Loja",
+                rating: "⭐ 4.3 (15k)",
+                fullDesc:
+                  "Loja de departamentos gigante aberta 24h, com doces exóticos, eletrônicos, cosméticos e souvenirs locais imperdíveis.",
+                distance: "🚶 5 min (400 m)",
+                hours: "Aberto (24h)",
+                routePath: "M 50,50 Q 35,62 21.9,73.3",
+                mapTransform: "scale(1.6) translate(28.1%, -23.3%)",
+              },
+              {
+                name: "Café L'Ambre",
+                walkTime: "7 min",
+                desc: "Kissa histórico servindo café envelhecido desde 1948.",
+                category: "Café Histórico",
+                rating: "⭐ 4.6 (1.5k)",
+                fullDesc:
+                  "Uma lenda de Tóquio, servindo grãos de café envelhecidos em um ambiente retrô preservado intocado desde 1948.",
+                distance: "🚶 7 min (550 m)",
+                hours: "Aberto (12:00 - 21:00)",
+                routePath: "M 50,50 Q 62,40 75,30",
+                mapTransform: "scale(1.5) translate(-25%, 20%)",
+              },
+            ],
+          },
+          horario: {
+            tag: "🌅 Oportunidade",
+            status: "🌅 19°C",
+            emoji: "🌅",
+            bubble:
+              "Momento perfeito! O pôr do sol ocorrerá em poucos minutos.",
+            desc: "<strong>Contexto de Horário:</strong> A Pally entende a hora e a localização. Se você estiver livre próximo a eventos temporários ou a janelas perfeitas como o pôr do sol, ela sugere mirantes gratuitos ou feiras locais.",
+            cards: [
+              {
+                name: "Governo Metropolitano",
+                walkTime: "5 min",
+                desc: "Mirante gratuito no 45º andar com vista do Monte Fuji.",
+                category: "Mirante Grátis",
+                rating: "⭐ 4.7 (18k)",
+                fullDesc:
+                  "Mirante gratuito no 45º andar em Shinjuku, oferecendo vista espetacular de toda Tóquio e do Monte Fuji no pôr do sol.",
+                distance: "🚶 5 min (400 m)",
+                hours: "Aberto (09:30 - 22:00)",
+                routePath: "M 50,50 Q 58,42 65.6,33.3",
+                mapTransform: "scale(1.5) translate(-15.6%, 16.7%)",
+              },
+              {
+                name: "Mori Art Museum",
+                walkTime: "15 min",
+                desc: "Museu de arte no 53º andar com janelas panorâmicas.",
+                category: "Museu & Vista",
+                rating: "⭐ 4.5 (3.5k)",
+                fullDesc:
+                  "Museu de arte contemporânea localizado no 53º andar da torre Roppongi Hills, unindo grandes exposições com janelas panorâmicas.",
+                distance: "🚶 15 min (1.2 km)",
+                hours: "Aberto (10:00 - 22:00)",
+                routePath: "M 50,50 Q 38,57 25,63.3",
+                mapTransform: "scale(1.5) translate(25%, -13.3%)",
+              },
+              {
+                name: "Meguro River Walk",
+                walkTime: "18 min",
+                desc: "Caminhada relaxante pelo canal, ideal na golden hour.",
+                category: "Caminhada Cênica",
+                rating: "⭐ 4.7 (5.2k)",
+                fullDesc:
+                  "Caminhada cênica ao longo do Rio Meguro, com árvores arqueando sobre o canal, perfeito para fotografia durante a golden hour.",
+                distance: "🚶 18 min (1.5 km)",
+                hours: "Aberto (24h)",
+                routePath: "M 50,50 L 50,80",
+                mapTransform: "scale(1.6) translate(0%, -30%)",
+              },
+            ],
+          },
+        };
+
+        function renderPreviewCards(situationKey) {
+          const data = previewData[situationKey];
+          previewCardsStack.innerHTML = ""; // Limpar antigos
+
+          data.cards.forEach((card, index) => {
+            const cardEl = document.createElement("div");
+            cardEl.className = "app-interactive-card";
+            cardEl.setAttribute("data-index", index);
+
+            cardEl.innerHTML = `
+            <div class="card-body">
+              <div class="card-name">${card.name}</div>
+              <div class="card-desc">${card.desc}</div>
+            </div>
+            <div class="card-time">
+              <span>🚶 ${card.walkTime}</span>
+            </div>
+          `;
+
+            previewCardsStack.appendChild(cardEl);
+          });
+        }
+
+        // Reset system to original suggestions list state
+        function resetToSuggestions(animated = true) {
+          const situationKey = document
+            .querySelector(".time-btn.active")
+            .getAttribute("data-situation");
+
+          const activeWrapper = document.querySelector(
+            `.map-preview-layer.active .map-wrapper`,
+          );
+          if (activeWrapper) {
+            activeWrapper.style.transition = animated
+              ? "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)"
+              : "none";
+            activeWrapper.style.transform = "scale(1.35) translate(0%, 0%)";
+
+            activeWrapper.querySelectorAll(".preview-pin").forEach((p) => {
+              p.classList.remove("active");
+            });
+
+            const routeLine = activeWrapper.querySelector(
+              ".preview-route-line",
+            );
+            if (routeLine) {
+              routeLine.classList.remove("active");
+            }
+          }
+
+          // Reset cards stacked and detailed card
+          previewCardsStack.classList.remove("collapsed");
+          previewDetailCard.classList.remove("active");
+          previewRouteNotification.classList.remove("active");
+
+          // Reset bubbles text and opacity
+          previewPallyBubble.style.opacity = "1";
+          previewPallyBubble.style.transform = "translateY(0)";
+
+          activePreviewIndex = null;
+        }
+
+        // Display Detailed Card
+        function showDetailCard(index) {
+          const situationKey = document
+            .querySelector(".time-btn.active")
+            .getAttribute("data-situation");
+          const cardData = previewData[situationKey].cards[index];
+          activePreviewIndex = index;
+
+          // Fill Detailed Card fields
+          document.getElementById("preview-detail-category").textContent =
+            cardData.category;
+          document.getElementById("preview-detail-rating").textContent =
+            cardData.rating;
+          document.getElementById("preview-detail-name").textContent =
+            cardData.name;
+          document.getElementById("preview-detail-desc").textContent =
+            cardData.fullDesc;
+          document.getElementById("preview-detail-distance").textContent =
+            cardData.distance;
+          document.getElementById("preview-detail-hours").textContent =
+            cardData.hours;
+
+          // Collapse suggestion stack
+          previewCardsStack.classList.add("collapsed");
+
+          // Hide Default Pally Bubble
+          previewPallyBubble.style.opacity = "0";
+          previewPallyBubble.style.transform = "translateY(-30px)";
+
+          // Hide route notification if visible
+          previewRouteNotification.classList.remove("active");
+
+          // Zoom map on pin
+          const activeWrapper = document.querySelector(
+            `.map-preview-layer.active .map-wrapper`,
+          );
+          if (activeWrapper) {
+            activeWrapper.style.transition =
+              "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)";
+            activeWrapper.style.transform = cardData.mapTransform;
+
+            activeWrapper.querySelectorAll(".preview-pin").forEach((p) => {
+              const pIndex = parseInt(p.getAttribute("data-index"), 10);
+              if (pIndex === index) {
+                p.classList.add("active");
+              } else {
+                p.classList.remove("active");
+              }
+            });
+
+            // Clear route visual state
+            const routeLine = activeWrapper.querySelector(
+              ".preview-route-line",
+            );
+            if (routeLine) {
+              routeLine.classList.remove("active");
+            }
+          }
+
+          // Slide Up detailed card
+          previewDetailCard.classList.add("active");
+        }
+
+        // Plot Route and show banner
+        function plotPreviewRoute(index) {
+          const situationKey = document
+            .querySelector(".time-btn.active")
+            .getAttribute("data-situation");
+          const cardData = previewData[situationKey].cards[index];
+
+          // Slide down detailed card
+          previewDetailCard.classList.remove("active");
+
+          // Draw Route line
+          const activeWrapper = document.querySelector(
+            `.map-preview-layer.active .map-wrapper`,
+          );
+          if (activeWrapper) {
+            const routeLine = activeWrapper.querySelector(
+              ".preview-route-line",
+            );
+            if (routeLine) {
+              routeLine.setAttribute("d", cardData.routePath);
+              // Force reflow
+              routeLine.getBoundingClientRect();
+              routeLine.classList.add("active");
+            }
+          }
+
+          // Show Route notification toast
+          previewRouteDesc.textContent = `${cardData.walkTime} de caminhada até ${cardData.name}`;
+          previewRouteNotification.classList.add("active");
+        }
+
+        function updatePreviewSection(situationKey) {
+          // Atualizar botões de toggle
+          timeButtons.forEach((btn) => {
+            if (btn.getAttribute("data-situation") === situationKey) {
+              btn.classList.add("active");
+              btn.setAttribute("aria-selected", "true");
+            } else {
+              btn.classList.remove("active");
+              btn.setAttribute("aria-selected", "false");
+            }
+          });
+
+          // Actualizar textos e períodos
+          const data = previewData[situationKey];
+          timeDesc.innerHTML = data.desc;
+          timeTag.textContent = data.status;
+          bubblePreviewText.textContent = data.bubble;
+          previewPallyBubbleIcon.textContent = data.emoji;
+
+          // Trocar camadas de mapas com transição
+          document.querySelectorAll(".map-preview-layer").forEach((layer) => {
+            layer.classList.remove("active");
+          });
+          document
+            .getElementById(`map-layer-${situationKey}`)
+            .classList.add("active");
+
+          // Re-renderizar cards e reiniciar estados de zoom/detalhe
+          renderPreviewCards(situationKey);
+          resetToSuggestions(false);
+        }
+
+        // Event listener dos botões do período/situação
+        timeButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const situationKey = btn.getAttribute("data-situation");
+            updatePreviewSection(situationKey);
+          });
+        });
+
+        // Clique nos cards dinâmicos do preview abre detalhe
+        previewCardsStack.addEventListener("click", (e) => {
+          const card = e.target.closest(".app-interactive-card");
+          if (!card) return;
+
+          const index = parseInt(card.getAttribute("data-index"), 10);
+          showDetailCard(index);
+        });
+
+        // Clique nos pins do mapa ativo abre detalhe
+        document
+          .getElementById("preview-map-container")
+          .addEventListener("click", (e) => {
+            const pin = e.target.closest(".preview-pin");
+            if (!pin) return;
+
+            const index = parseInt(pin.getAttribute("data-index"), 10);
+            showDetailCard(index);
+          });
+
+        // Event listener do botão "Traçar Rota" no detalhe do preview
+        previewBtnPlotRoute.addEventListener("click", () => {
+          if (activePreviewIndex !== null) {
+            plotPreviewRoute(activePreviewIndex);
+          }
+        });
+
+        // Fechar detalhe clicando fora do card/pin/sugestão
+        const previewPhone = document.getElementById("preview-phone");
+        previewPhone.addEventListener("click", (e) => {
+          const isDetailActive = previewDetailCard.classList.contains("active");
+          const isRouteActive =
+            previewRouteNotification.classList.contains("active");
+
+          if (isDetailActive || isRouteActive) {
+            const clickedCard = e.target.closest("#preview-detail-card");
+            const clickedPin = e.target.closest(".preview-pin");
+            const clickedBottomCard = e.target.closest(".app-interactive-card");
+            const clickedRouteNotif = e.target.closest(
+              "#preview-route-notification",
+            );
+
+            if (
+              !clickedCard &&
+              !clickedPin &&
+              !clickedBottomCard &&
+              !clickedRouteNotif
+            ) {
+              resetToSuggestions(true);
+            }
+          }
+        });
+
+        // Inicializa o primeiro período (Clima / Chuva)
+        updatePreviewSection("chuva");
+
+        /* ==========================================================================
+         F. Envio de Formulário com Validação Customizada e Modal de Sucesso (B2C Only)
+         ========================================================================== */
+        const contactForm = document.getElementById("contact-form");
+        const successModal = document.getElementById("success-modal");
+        const successModalMsg = document.getElementById("success-modal-msg");
+        const closeModalBtn = document.getElementById("close-modal-btn");
+
+        contactForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          let isFormValid = true;
+          const inputs = contactForm.querySelectorAll(".form-input");
+
+          // Validação visual
+          inputs.forEach((input) => {
+            if (!input.checkValidity()) {
+              isFormValid = false;
+              input.style.borderColor = "#EF4444";
+              input.style.boxShadow = "0 0 0 3px rgba(239, 68, 68, 0.15)";
+            } else {
+              input.style.borderColor = "rgba(0, 180, 216, 0.15)";
+              input.style.boxShadow = "none";
+            }
+          });
+
+          if (isFormValid) {
+            const nameVal = document.getElementById("form-name").value;
+            const destVal = document.getElementById("form-dest").value;
+
+            successModalMsg.textContent = `Olá ${nameVal}, confirmamos sua inscrição na lista de espera do Pally! Enviaremos novidades e o link de acesso antecipado para a sua viagem planejada para ${destVal} no seu e-mail.`;
+
+            // Ativa modal de sucesso
+            successModal.classList.add("active");
+            contactForm.reset();
+          }
+        });
+
+        // Fecha o modal de sucesso
+        closeModalBtn.addEventListener("click", () => {
+          successModal.classList.remove("active");
+        });
+
+        // Reseta cores de erro conforme usuário digita corretamente
+        contactForm.querySelectorAll(".form-input").forEach((input) => {
+          input.addEventListener("input", () => {
+            if (input.checkValidity()) {
+              input.style.borderColor = "rgba(0, 180, 216, 0.15)";
+              input.style.boxShadow = "none";
+            }
+          });
+        });
+
+        /* ==========================================================================
+         G. Micro-interação Hover no Logo (Rotação orientada ao cursor)
+         ========================================================================== */
+        document.querySelectorAll(".nav-logo").forEach((logo) => {
+          const svg = logo.querySelector("svg");
+          if (!svg) return;
+
+          logo.addEventListener("mousemove", (e) => {
+            const rect = svg.getBoundingClientRect();
+
+            // Calculate visual center of the SVG
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            // Distance from center to cursor
+            const dx = e.clientX - centerX;
+            const dy = e.clientY - centerY;
+
+            // Calculate angle in degrees
+            const angleRad = Math.atan2(dy, dx);
+            let angleDeg = angleRad * (180 / Math.PI);
+
+            // Calibration offset: since the pointing part is already rotated ~30deg to the right,
+            // we offset the target rotation angle to align that part with the cursor.
+            // +30 degrees translates the visual center-point of the logo to face the cursor.
+            const ANGLE_OFFSET = 30;
+            angleDeg += ANGLE_OFFSET;
+
+            // Set custom property to rotate the SVG
+            svg.style.setProperty("--logo-rotation", `${angleDeg}deg`);
+          });
+
+          logo.addEventListener("mouseleave", () => {
+            // Smoothly snap back to 0 degrees
+            svg.style.setProperty("--logo-rotation", "0deg");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
