@@ -12,8 +12,8 @@
     "start": "node ./dist/server/entry.mjs"
   },
   "dependencies": {
-    "@astrojs/vercel": "^7.8.2",
-    "astro": "^4.16.18",
+    "@astrojs/vercel": "^8.2.11",
+    "astro": "^5.18.2",
     "resend": "^4.1.2"
   }
 }
