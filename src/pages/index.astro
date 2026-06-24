@@ -3446,6 +3446,7 @@
                     transform: translateY(0);
                     top: 8px;
                     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    animation: none;
                   "
                 >
                   <div
@@ -4226,10 +4227,6 @@
           previewDetailCard.classList.remove("active");
           previewRouteNotification.classList.remove("active");
 
-          // Reset bubbles text and opacity
-          previewPallyBubble.style.opacity = "1";
-          previewPallyBubble.style.transform = "translateY(0)";
-
           activePreviewIndex = null;
         }
 
@@ -4357,6 +4354,11 @@
           // Re-renderizar cards e reiniciar estados de zoom/detalhe
           renderPreviewCards(situationKey);
           resetToSuggestions(false);
+
+          // Reexibir notificação — só aparece na primeira visualização de cada modo
+          previewPallyBubble.getBoundingClientRect();
+          previewPallyBubble.style.opacity = "1";
+          previewPallyBubble.style.transform = "translateY(0)";
         }
 
         // Event listener dos botões do período/situação
